@@ -21,7 +21,7 @@ apt-get install -y -q --no-install-recommends \
     locales \
     unzip
 apt-get clean
-rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+rm -rf /var/lib/apt/lists/* /var/tmp/*
 sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 dpkg-reconfigure --frontend=noninteractive locales
 update-locale LANG="en_US.UTF-8"
@@ -43,22 +43,23 @@ apt-get install -y -q --no-install-recommends \
     libglw1-mesa \
     libgomp1 \
     libjpeg62 \
+    libncurses5-dev \
     libxm4 \
     netpbm \
     tcsh \
     xfonts-base \
     xvfb
 apt-get clean
-rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+rm -rf /var/lib/apt/lists/*  /var/tmp/*
 curl -sSL --retry 5 -o /tmp/toinstall.deb http://mirrors.kernel.org/debian/pool/main/libx/libxp/libxp6_1.0.2-2_amd64.deb
 dpkg -i /tmp/toinstall.deb
 rm /tmp/toinstall.deb
-curl -sSL --retry 5 -o /tmp/toinstall.deb http://mirrors.kernel.org/debian/pool/main/libp/libpng/libpng12-0_1.2.49-1%2Bdeb7u2_amd64.deb
+curl -sSL --retry 5 -o /tmp/toinstall.deb http://mirrors.kernel.org/debian/pool/main/libp/libpng/libpng12-0_1.2.50-2%2Bdeb8u3_amd64.deb
 dpkg -i /tmp/toinstall.deb
 rm /tmp/toinstall.deb
 apt-get install -f
 apt-get clean
-rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+rm -rf /var/lib/apt/lists/* /var/tmp/*
 gsl2_path="$(find / -name 'libgsl.so.19' || printf '')"
 if [ -n "$gsl2_path" ]; then
   ln -sfv "$gsl2_path" "$(dirname $gsl2_path)/libgsl.so.0";
@@ -89,7 +90,7 @@ apt-get install -y -q --no-install-recommends \
     libxt6 \
     wget
 apt-get clean
-rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+rm -rf /var/lib/apt/lists/* /var/tmp/*
 echo "Downloading FSL ..."
 mkdir -p /opt/fsl-5.0.10
 curl -fsSL --retry 5 https://fsl.fmrib.ox.ac.uk/fsldownloads/fsl-5.0.10-centos6_64.tar.gz \
@@ -109,19 +110,19 @@ apt-get install -y -q --no-install-recommends \
     libxpm-dev \
     libxt6
 apt-get clean
-rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+rm -rf /var/lib/apt/lists/* /var/tmp/*
 echo "Downloading MATLAB Compiler Runtime ..."
 curl -fsSL --retry 5 -o /tmp/MCRInstaller.bin https://dl.dropbox.com/s/zz6me0c3v4yq5fd/MCR_R2010a_glnxa64_installer.bin
 chmod +x /tmp/MCRInstaller.bin
 /tmp/MCRInstaller.bin -silent -P installLocation="/opt/matlabmcr-2010a"
-rm -rf /tmp/*
+
 echo "Downloading standalone SPM ..."
 curl -fsSL --retry 5 -o /tmp/spm12.zip http://www.fil.ion.ucl.ac.uk/spm/download/restricted/utopia/previous/spm12_r7219_R2010a.zip
 unzip -q /tmp/spm12.zip -d /tmp
 mkdir -p /opt/spm12-r7219
 mv /tmp/spm12/* /opt/spm12-r7219/
 chmod -R 777 /opt/spm12-r7219
-rm -rf /tmp/*
+
 /opt/spm12-r7219/run_spm12.sh /opt/matlabmcr-2010a/v713 quit
 sed -i '$iexport SPMMCRCMD=\"/opt/spm12-r7219/run_spm12.sh /opt/matlabmcr-2010a/v713 script\"' $ND_ENTRYPOINT
 
