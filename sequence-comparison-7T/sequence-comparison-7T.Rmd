@@ -123,7 +123,7 @@ Below you can see the CNR values over a subset of the ROIs, for 2 participants, 
 
 You may need to zoom/squint a little, but the general pattern is that for the main effect of cue, the CNR intensities get brighter when going from the TR700 sequence down to the TR1920 sequence. However, the reverse is true for left - right hand.
 
-```{r, out.width="1000px", fig.align='center', fig.cap="CNR values plotted for subjects 2 (left column) and 5 (right column). Figures show a random cross-section for each participant to give an idea of CNR values across ROIs"}
+```{r, out.width="800px", fig.align='center', fig.cap="CNR values plotted for subjects 2 (left column) and 5 (right column). Figures show a random cross-section for each participant to give an idea of CNR values across ROIs"}
 knitr::include_graphics("subs-02-05-summary.pdf")
 ```
 
