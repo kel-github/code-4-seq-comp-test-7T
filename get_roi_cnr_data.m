@@ -1,88 +1,81 @@
 %% written by K. Garner, 2020
-% extracting CNR data from ROIs using spm functionality
+% extracting CNR data from ROIs
 % -------------------------------------------------------------------------------------------------------------
-function [] = get_roi_cnr_data(PLACE)
-% PLACE = 'home'
+function [] = get_roi_cnr_data(PLACE, save_name, thrsh, thrsh_meth)
+% PLACE = 'home' - where is your data?
+% save_name = what would you like the output csv file to be called?
+% thrsh = threshold value (can be a single value or a percentage)
+% thrsh_meth = 'p' - get values above the percentile, 't' = its a t stat so
+% take above that value, 'none' = don't thrshold
 
-%% define path and session variables
 switch PLACE
-    case 'home'       
-        addpath('~/Documents/MATLAB/spm12');
-    case 'qubes'
-        addpath('/home/kgarner/Documents/MATLAB/spm12');
-    case 'psych'    
-        addpath('/home/kellygarner/Documents/spm12');
+    case 'inode'
+%        data_dir = '/scratch/qbi/uqkgarn1/STRIWP1/derivatives/glmTDFAST/';
+        ims = '/scratch/qbi/uqkgarn1/STRIWP1/derivatives/glmTDFAST/sub-%s/TR%s/THRSH/*.nii.gz';
 end
 
-% file info
-data_dir = '~/Dropbox/MC-Projects/imaging-value-cert-att/striwp1/CNR-data/';
 TRs = {'700', '1510', '1920'};
 subs = {'01', '02', '03', '04', '05'};
-cdir = pwd;
+%cdir = pwd;
 
-% open text file to collect data
-save_name = '~/Dropbox/MC-Projects/imaging-value-cert-att/striwp1/CNR-data/CNR_aggregated.csv';
+start_idx = 4; % from which letter to take the start of the ROI name (from the image
+% file name)
+
+if isempty(save_name)
+    save_name = '/scratch/qbi/uqkgarn1/STRIWP1/derivatives/glmTDFAST/tThresh_agg.csv';
+end
+
 fid=fopen(save_name, 'w');
-fprintf(fid, '%s,%s,%s,%s,%s\n', 'sub', 'TR', 'roi', 'contrast', 'R');
+fprintf(fid, '%s,%s,%s,%s,%s\n', 'sub', 'TR', 'roi', 'contrast', 'tT');
 
 %% go through each subject x TR x ROI x contrast
 for iSub = 1:length(subs)
+    fprintf('extracting thresh t-stat data for sub 0%s \n', subs{iSub});
     
-    fprintf('extracting CNR data for sub 0%s \n', subs{iSub});
-    
-    for iTR = 1:length(TRs)
+    for iTR = 1:length(TRs) % go through each TR
         
-        % navigate to participant's folder
-        cd(sprintf([data_dir 'sub-%s/TR%s/'], subs{iSub}, TRs{iTR}));
+        these_ims = dir(sprintf(ims, subs{iSub}, TRs{iTR}));
         
-        [masks, CNRs] = unzip_files; % get the list of mask and CNR files for that sub
-        % for each CNR and mask, first get the xyz coordinates of the mask,
-        % and then use that info to extract the required info from the CNR
-        % files
-        for iMasks = 1:length(masks)
-            xyz = get_roi_xyz(masks(iMasks)); % get co-ordinates
-            for iContrasts = 1:length(CNRs)
-                R = get_RMS(CNRs(iContrasts), xyz);
-                % print data to results file
-                sub_data = [str2num(subs{iSub}), str2num(TRs{iTR}), iMasks, iContrasts, R];
-                fprintf(fid, '%d,%d,%d,%d,%f\n', sub_data);
+        for iIms = 1:length(these_ims)
+            V = niftiread([these_ims(iIms).folder '/' these_ims(iIms).name]);
+            
+            % now threshold the data if required
+            switch thrsh_meth
+                case 'none'
+                   tmp=0;
+                case 'p'    
+                   tmp = prctile(V(V>0), thrsh, 'all');
+                case 't'
+                    tmp = thrsh;
             end
-        end
-       % delete files that were unzipped for the operation
-       delete('*.nii');
-       delete('CNR/*.nii');
-    end 
-    cd(cdir);
-    
-end
-
-fclose(fid); % close the data file
-
-
-    function [masks, CNRs] = unzip_files()
-        % unzip the mask files
-        gunzip('MASKS/*.gz');
-        % get the list of masks
-        masks = dir('MASKS/*.nii');
+            fprintf('averaging t-stat data: %d voxels for sub 0%s TR %s image %s\n', ...
+                                            sum(V>tmp, 'all'), ...
+                                            subs{iSub}, ...
+                                            TRs{iTR}, ...
+                                            these_ims(iIms).name);
+            tT = mean(V(V>tmp));
+            if isnan(tT)
+                tT = 0;
+            end
+            
+            % get the ROI name for the results file
+            ROIexp = '_spmT';        
+            ROIidx = regexp(these_ims(iIms).name, ROIexp);
+            ROI_str = these_ims(iIms).name(start_idx:(ROIidx-1));
         
-        % gunzip and get the list of CNR files
-        gunzip('FLGLM/CNR_*.gz');
-        CNRs = dir('FLGLM/CNR_*.nii');
+            % and the contrast number
+            conexp = '.nii.gz';
+            conidx = regexp(these_ims(iIms).name, conexp);
+            con_str= these_ims(iIms).name(conidx-1);
+        
+            % update the text file
+            %sub_data = [subs{iSub}, TRs{iTR}, ROI_str, con_str, num2str(tT)];
+            fprintf(fid, '%s,%s,%s,%s,%s\n', subs{iSub}, TRs{iTR}, ROI_str, con_str, num2str(tT));
+            
+        end
+        
     end
-
-    function [xyz] = get_roi_xyz(mask_info)
-        volInf = spm_vol([mask_info.folder '/' mask_info.name]);
-        Y = spm_read_vols(volInf, 1);
-        idx = find(Y > 0);
-        [x, y, z] = ind2sub(size(Y), idx);
-        xyz = [x y z]';
-    end
-
-    function [R] = get_RMS(CNR_info, xyz)
-        Y = spm_get_data([CNR_info.folder '/' CNR_info.name], xyz);
-        Y = mean(Y.^2);
-        R = sqrt(Y);
-    end
-
-end
-
+end     
+ fclose(fid); % close the data file       
+            
+    
