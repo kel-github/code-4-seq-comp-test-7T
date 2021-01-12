@@ -73,5 +73,7 @@ peak_ps = 4/p: 6/p; % these n of order params are the ones that should correspon
 info.peaks = peak_ps;
 info.conds = cidx;
 info.sessions = sidx;
+info.sub = sub;
+info.TR = TR;
 
 end
