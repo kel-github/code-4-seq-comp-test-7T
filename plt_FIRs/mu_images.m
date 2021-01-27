@@ -15,9 +15,9 @@ function [info] = mu_images(PLACE, info, out_name)
 %% start here by defining path parameters et al
 switch PLACE
     case 'inode'
-        spms = '/scratch/qbi/uqkgarn1/STRIWP1/derivatives/glmFIR/sub-%s/TR%s/FLGLM/SPM.mat';
+        %spms = '/scratch/qbi/uqkgarn1/STRIWP1/derivatives/glmFIR/sub-%s/TR%s/FLGLM/SPM.mat';
         dat =  '/scratch/qbi/uqkgarn1/STRIWP1/derivatives/glmFIR/sub-%s/TR%s/FLGLM/PARAMS/';
-        addpath('/opt/ohpc/pub/apps/spm12')
+        addpath('/scratch/qbi/uqkgarn1/spm12/spm12')
 end
 
 cidx = info.conds;
@@ -27,8 +27,6 @@ sub = info.sub;
 TR = info.TR;
 
 %% select files of interest
-% idea here is to find the 
-fn = 'beta_000%d.nii.gz'; % filename template
 fs = dir([sprintf(dat, sub, TR), 'beta*.nii.gz']); % get list of files
 % now sanity check we have the right number of files
 if (size(fs,1) ~= length(cidx))
@@ -63,7 +61,7 @@ Vs = spm_vol(vols);
 %% define imcalc function
 % now that we know which images shoould contain the peak response,
 % we can now generate the spm function for computing the average
-f = [];
+f = '(';
 for iIms = 1:length(ims)
     if iIms < length(ims)
         f = [f, sprintf('i%d+', iIms)];
@@ -71,7 +69,7 @@ for iIms = 1:length(ims)
         f= [f, sprintf('i%d', iIms)];
     end
 end
-f = [f, sprintf('/%d', length(ims))];
+f = [f, sprintf(')/%d', length(ims))];
 
 %% run imcalc
 flg.dtype = 16; % to keep data as single, see spm_type
@@ -84,5 +82,5 @@ delete([fs(1).folder '/' '*.nii']);
 
 %% return name of created file to info
 info.mupeak = [fs(1).folder '/' out_name '.gz'];
-
+info.flg.dtype = flg.dtype;
 end

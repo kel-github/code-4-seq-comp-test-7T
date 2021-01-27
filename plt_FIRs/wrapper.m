@@ -1,0 +1,33 @@
+%% written by K.Garner 2021
+
+% this is the wrapper code for the pt_FIRs functions. This code applies the
+% functionality across participants and TRs, to define the beta images
+% according to their condition, create new mask images by ROI x strength of
+% response to the task stimulus, and to plot the fitted FIR function for
+% each participant, and averaged across participants
+clear all
+
+%% define variables to run functions
+subs = {'01', '02', '03' , '04', '05'};
+TRs = {'700', '1510', '1920'};
+PLACE = 'inode';
+nsubs = length(subs);
+nTRs = length(TRs);
+order = 9;
+
+%% run functionality across all subs and TRs
+for iSubs = 1:nsubs
+    csub = subs{iSubs};
+    for iTRs = 1:nTRs
+        
+        cTR = TRs{iTRs};
+        
+        info = def_pars(PLACE, csub, cTR); % code images 
+        info = mu_images(PLACE, info, 'peaks.nii'); % get voxels with highest response
+        info = mk_int_msks(PLACE, info); % make masks that are the intersection of anatomy, and the distribution of the peak responses for that region
+        info = mu_params(PLACE, info, order, 'sub%s_TR%s_cond%d_order%d.nii');
+        info = gt_prms_by_reg(PLACE, info);
+        info = plt_prms_by_reg(PLACE, info);
+        info = plt_mu_prms_by_reg(PLACE, info);
+    end
+end
