@@ -16,7 +16,7 @@ output:
 ```{r, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(rmarkdown)    # You need this library to run this template.
-library(epuRate)      # Install with devtools: install_github("holtzy/epuRate", force=TRUE)
+#library(epuRate)      # Install with devtools: install_github("holtzy/epuRate", force=TRUE)
 library(knitr)
 library(cowplot)
 library(wesanderson)
@@ -140,7 +140,7 @@ Now we want to ascertain whether there are any differences in the CNRs observed,
 ```{r}
 
 # Load and tidy data
-CNR = read.csv('~/Dropbox/MC-Projects/imaging-value-cert-att/striwp1/CNR-data/CNR_aggregated.csv')
+CNR = read.csv('~/Dropbox/MC-Projects/imaging-value-cert-att/striwp1/TDFASTT-data/CNR_aggregated.csv')
 CNR$sub <- factor(CNR$sub)
 CNR$TR <- factor(CNR$TR)
 CNR$roi <- factor(CNR$roi)
@@ -242,9 +242,9 @@ do.ts <- function(data, x, y){
 apply.ts <- function(data, sig){
   lapply(levels(data$contrast)[sig], function(c) mapply(do.ts, x, y, MoreArgs=list(data=data[data$contrast == c, ])))
 }
-sig = c(1, 2, 3, 4, 5, 7)
+sig = c(1, 2, 3, 4, 5, 6, 7)
 fucomps <- apply.ts(data=subcort, sig=sig)}
-fucomps[[6]]
+fucomps[[7]]
 
 ```
 
@@ -257,13 +257,13 @@ fucomps[[6]]
 This time, we observe an almost opposite pattern of results.
 
 ```{r}
-summary(sub.mods[[2]])
+summary(sub.mods[[1]])
 ```
 
 
 Follow up tests show that: TR 700 < 1510, TR 700 < TR 1920
 ```{r}
-fucomps[[2]]
+fucomps[[1]]
 ```
 
 <br><br>
@@ -307,10 +307,10 @@ Although there was an influence of sequence observed for subcortical regions, we
 draw.sub.plts(CNR, C="tgtLoc", titx="ME Target Location (L vs R")
 ```
 ```{r}
-summary(sub.mods[[1]])
+summary(sub.mods[[2]])
 ```
 ```{r}
-fucomps[[1]]
+fucomps[[2]]
 ```
 
 <br><br>
@@ -354,8 +354,8 @@ draw.sub.plts(CNR, C="RelValue", titx="Relative Value (H v L")
 ```
 
 ```{r}
-summary(sub.mods[[5]])
+summary(sub.mods[[6]])
 ```
 ```{r}
-fucomps[[5]]
+fucomps[[6]]
 ```
