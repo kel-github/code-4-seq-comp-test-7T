@@ -12,7 +12,8 @@ switch PLACE
     case 'inode'
         %        data_dir = '/scratch/qbi/uqkgarn1/STRIWP1/derivatives/glmTDFAST/';
         spms = '/scratch/qbi/uqkgarn1/STRIWP1/derivatives/glmFIR/sub-%s/TR%s/FLGLM/SPM.mat';
-        addpath('~/opt/ohpc/pub/apps/spm12')
+        addpath('/opt/ohpc/pub/apps/spm12/spm12');
+        %addpath('/scratch/qbi/uqkgarn1/spm12');
 end
 
 TRs = {'700', '1510', '1920'};

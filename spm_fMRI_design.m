@@ -1,4 +1,4 @@
-function [SPM] = spm_fMRI_design_copy(SPM,save_SPM)
+function [SPM] = spm_fMRI_design(SPM,save_SPM)
 % Assembles a design for fMRI studies
 % FORMAT [SPM] = spm_fMRI_design(SPM)
 %
@@ -230,24 +230,20 @@ for s = 1:length(SPM.nscan)
         X = X((0:(k - 1))*fMRI_T + fMRI_T0 + 32,:);
     end
     
-    
-    % removing orthogonalisation for FIR models - KG De4c 28th 2020
-
-%     
+        
     %-Orthogonalise (within trial type)
     %----------------------------------------------------------------------
-%     for i = 1:length(Fc)
-%         if i<= numel(U) && ... % for Volterra kernels
-%                 (~isfield(U(i),'orth') || U(i).orth)
-%             p = ones(size(Fc(i).i));
-%         else
-%             p = Fc(i).p;
-%         end
-%         for j = 1:max(p)
-%             %X(:,Fc(i).i(p==j)) = spm_orth(X(:,Fc(i).i(p==j)));
-%             X(:,Fc(i).i(p==j)) = X(:,Fc(i).i(p==j));
-%         end
-%     end
+    for i = 1:length(Fc)
+        if i<= numel(U) && ... % for Volterra kernels
+                (~isfield(U(i),'orth') || U(i).orth)
+            p = ones(size(Fc(i).i));
+        else
+            p = Fc(i).p;
+        end
+        for j = 1:max(p)
+            X(:,Fc(i).i(p==j)) = spm_orth(X(:,Fc(i).i(p==j)));
+        end
+    end
 
     
     
