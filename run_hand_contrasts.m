@@ -10,7 +10,7 @@ clc
 % define path things
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 addpath('/scratch/qbi/uqkgarn1/spm12/spm12')
-jobfile = {'/scratch/qbi/uqkgarn1/run_contrasts_job.m'};
+jobfile = {'/scratch/qbi/uqkgarn1/hand_contrasts_job.m'};
 jobs = repmat(jobfile, 1, 1);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -23,19 +23,12 @@ glmFolder = 'glmTDFAST_HANDS';
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % run contrasts
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-inputs = cell(7, 1);
+inputs = cell(1, 1);
 
 for iSub = 1:length(subs)
     for iTR = 1:length(TRs)
         
-        inputs{1,1} = {sprintf(['/scratch/qbi/uqkgarn1/STRIWP1/derivatives/', glmFolder, '/sub-0%d/TR%d/FLGLM/SPM.mat'], subs(iSub), TRs(iTR))};
-        inputs{2,1} = 'left';
-        inputs{3,1} = [1 0 0 0 0 0];
-        inputs{4,1} = 'right';
-        inputs{5,1} = [0 0 0 1 0 0];
-        inputs{6,1} = 'lmr';
-        inputs{7,1} = [1 0 0 -1 0 0];
-        
+        inputs{1,1} = {sprintf(['/scratch/qbi/uqkgarn1/STRIWP1/derivatives/', glmFolder, '/sub-0%d/TR%d/FLGLM/SPM.mat'], subs(iSub), TRs(iTR))};        
         spm('defaults', 'FMRI');
         spm_jobman('run', jobs, inputs{:});
     end
