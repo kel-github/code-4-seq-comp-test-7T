@@ -13,7 +13,7 @@ function [] = get_roi_cnr_data_distribution(PLACE, save_name, thrsh, thrsh_meth,
 switch PLACE
     case 'inode'
 %        data_dir = '/scratch/qbi/uqkgarn1/STRIWP1/derivatives/glmTDFAST/';
-        ims = '/scratch/qbi/uqkgarn1/STRIWP1/derivatives/glmTDFAST_TC/sub-%s/TR%s/THRSH/spmT*.nii.gz';
+        ims = '/scratch/qbi/uqkgarn1/STRIWP1/derivatives/glmTDFAST_HANDS/sub-%s/TR%s/THRSH/spmF*thresh.nii.gz';
 end
 
 TRs = {'700', '1510', '1920'};
@@ -24,7 +24,7 @@ start_idx = 4; % from which letter to take the start of the ROI name (from the i
 % file name)
 
 if isempty(save_name)
-    save_name = '/scratch/qbi/uqkgarn1/STRIWP1/derivatives/glmTDFAST_TC/TC_tCNR_stat_vox_agg.csv';
+    save_name = '/scratch/qbi/uqkgarn1/STRIWP1/derivatives/glmTDFAST_HANDS/HANDSs_tCNR_stat_vox_agg.csv';
 end
 
 fid=fopen(save_name, 'w');

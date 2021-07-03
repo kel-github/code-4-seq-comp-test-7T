@@ -7,23 +7,23 @@ function [] = get_roi_cnr_data(PLACE, save_name, thrsh, thrsh_meth, roi_exp)
 % thrsh = threshold value (can be a single value or a percentage)
 % thrsh_meth = 'p' - get values above the percentile, 't' = its a t stat so
 % take above that value, 'none' = don't thrshold
-% roi_exp = '_abs' or _tSNR'
+% roi_exp = '_abs' or _tSNR' or '_spmF' or '_tsnr'
 
 switch PLACE
     case 'inode'
 %        data_dir = '/scratch/qbi/uqkgarn1/STRIWP1/derivatives/glmTDFAST/';
-        ims = '/scratch/qbi/uqkgarn1/STRIWP1/derivatives/glmTDFAST/sub-%s/TR%s/THRSH/*abs_*.nii.gz';
+        ims = '/scratch/qbi/uqkgarn1/STRIWP1/derivatives/tSNR/sub-%s/TR%s/MSKD/*.nii.gz';
 end
 
-TRs = {'700', '1510', '1920', '700ECHO1', '700ECHO2'};
+TRs = {'700', '1510', '1920'};
 subs = {'01', '02', '03', '04', '05'};
 %cdir = pwd;
 
-start_idx = 4; % from which letter to take the start of the ROI name (from the image
+start_idx = 2; % from which letter to take the start of the ROI name (from the image
 % file name)
 
 if isempty(save_name)
-    save_name = '/scratch/qbi/uqkgarn1/STRIWP1/derivatives/glmTDFAST/tCNR_agg.csv';
+    save_name = '/scratch/qbi/uqkgarn1/STRIWP1/derivatives/tSNR/tSNR_ROI_agg.csv';
 end
 
 fid=fopen(save_name, 'w');
