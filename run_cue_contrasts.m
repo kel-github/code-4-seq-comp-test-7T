@@ -10,7 +10,7 @@ clc
 % define path things
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 addpath('/scratch/qbi/uqkgarn1/spm12/spm12')
-jobfile = {'/scratch/qbi/uqkgarn1/lat_cue_contrasts_job.m'};
+jobfile = {'/scratch/qbi/uqkgarn1/seq-comp-proj/lat_cue_contrasts_job.m'};
 jobs = repmat(jobfile, 1, 1);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -9,4 +9,11 @@ matlabbatch{1}.spm.stats.con.consess{1}.fcon.weights = [1 0 0 -1 0 0
                                                         0 1 0 0 -1 0
                                                         0 0 1 0 0 -1];
 matlabbatch{1}.spm.stats.con.consess{1}.fcon.sessrep = 'replsc';
+% this will be the t-stat for hand activation
+matlabbatch{1}.spm.stats.con.consess{2}.tcon.name = 'lhand';
+matlabbatch{1}.spm.stats.con.consess{2}.tcon.weights = [1 1 1 0 0 0];
+matlabbatch{1}.spm.stats.con.consess{2}.tcon.sessrep = 'replsc';
+matlabbatch{1}.spm.stats.con.consess{3}.tcon.name = 'rhand';
+matlabbatch{1}.spm.stats.con.consess{3}.tcon.weights = [0 0 0 1 1 1];
+matlabbatch{1}.spm.stats.con.consess{3}.tcon.sessrep = 'replsc';
 matlabbatch{1}.spm.stats.con.delete = 1;
